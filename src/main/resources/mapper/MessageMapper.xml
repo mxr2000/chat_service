@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.mxr.chatservice.mapper.MessageMapper">
+
+    <insert id="insertMessage" parameterType="com.mxr.chatservice.pojo.Message">
+        INSERT INTO messages (sender, receiver, type, content, handled) VALUES(#{sender}, #{receiver}, #{type}, #{content}, true)
+    </insert>
+    <insert id="insertUnhandledMessage">
+        INSERT INTO messages (sender, receiver, type, content, handled) VALUES(#{sender}, #{receiver}, #{type}, #{content}, false)
+    </insert>
+    <update id="handleAllMessages">
+        UPDATE messages set handled = true where receiver = #{username} and handled = false;
+    </update>
+    <select id="getHistoryMessages" resultType="com.mxr.chatservice.pojo.Message">
+        SELECT * FROM messages WHERE receiver = #{username} or sender = #{username};
+    </select>
+    <select id="getUnhandledMessages" resultType="com.mxr.chatservice.pojo.Message">
+        SELECT * FROM messages WHERE receiver = #{username} and handled = false;
+    </select>
+    <select id="getHistoryMessagesWithContact" resultType="com.mxr.chatservice.pojo.Message">
+        select * from messages
+        where (sender = #{user1} and receiver = #{user2}) or (sender = #{user2} and receiver = #{user1});
+    </select>
+
+
+</mapper>
